@@ -11,9 +11,9 @@ const ItemCtrl = (function(){
 
     const data = {
         items : [ 
-        {id:0, name:'Steak Dinner', calories: 1200},
-        {id:1, name:'Cookie', calories: 400},
-        {id:2, name:'Eggs', calories: 1000}
+        // {id:0, name:'Steak Dinner', calories: 1200},
+        // {id:1, name:'Cookie', calories: 400},
+        // {id:2, name:'Eggs', calories: 1000}
     ],
         currentItem : null,
         totalCalories : 0
@@ -40,6 +40,18 @@ const ItemCtrl = (function(){
             return newItem;
             //console.log(name,calories);
         },
+        getTotalCalories: function(){
+            let total = 0;
+
+            data.items.forEach(function(item){
+                total += item.calories;
+            });
+            
+            data.totalCalories = total;
+
+            return data.totalCalories;
+
+        },
         logData: function(){
             return data;
         } 
@@ -52,7 +64,8 @@ const UICtrl = (function(){
         itemList : '#item-list',
         addBtn : '.add-btn',
         itemNameInput : '#item-name',
-        itemCaloriesInput: '#item-calories'
+        itemCaloriesInput: '#item-calories',
+        totalCalories: '.total-calories'
 
 
     }
@@ -90,6 +103,10 @@ const UICtrl = (function(){
              document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend',li)
             
         },
+        showTotalCalories: function(totalCalories){
+            document.querySelector(UISelectors.totalCalories).textContent = totalCalories;
+
+        },
 
         clearInput: function(){
             document.querySelector(UISelectors.itemNameInput).value = '';
@@ -124,6 +141,10 @@ const App = (function(ItemCtrl,UICtrl){
 
             UICtrl.addListItem(newItem);
 
+            const totalCalories = ItemCtrl.getTotalCalories();
+
+            UICtrl.showTotalCalories(totalCalories);
+
             UICtrl.clearInput();
      
         }
@@ -136,13 +157,18 @@ const App = (function(ItemCtrl,UICtrl){
     //console.log(ItemCtrl.logData());
     return{
         init: function(){
-            //console.log('hai');
+            
             const items = ItemCtrl.getItems();
 
             UICtrl.populateItemList(items);
 
+            // const totalCalories = ItemCtrl.getTotalCalories();
+
+            // UICtrl.showTotalCalories(totalCalories);
+
+
             loadEventListeners();
-            //  
+              
         }
     }
     
