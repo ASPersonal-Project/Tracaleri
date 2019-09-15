@@ -40,6 +40,24 @@ const ItemCtrl = (function(){
             return newItem;
             //console.log(name,calories);
         },
+        getItemById: function(id){
+            let found = null;
+
+            data.items.forEach(function(item){
+                if(item.id === id){
+                    found = item;
+                }
+            });
+            return found;
+
+        },
+        setCurrentItem: function(item){
+            data.currentItem = item;
+ 
+        },
+        getCurrentItem: function(){
+            return data.currentItem;
+        },
         getTotalCalories: function(){
             let total = 0;
 
@@ -115,6 +133,12 @@ const UICtrl = (function(){
             document.querySelector(UISelectors.itemNameInput).value = '';
             document.querySelector(UISelectors.itemCaloriesInput).value = '';
         },
+        addItemToForm: function(){
+            document.querySelector(UISelectors.itemNameInput).value = ItemCtrl.getCurrentItem().name;
+            document.querySelector(UISelectors.itemCaloriesInput).value = ItemCtrl.getCurrentItem().calories;
+            UICtrl.showEditState();
+
+        },
         clearEditState: function(){
             UICtrl.clearInput();
             document.querySelector(UISelectors.updateBtn).style.display = 'none';
@@ -122,10 +146,17 @@ const UICtrl = (function(){
             document.querySelector(UISelectors.backBtn).style.display = 'none';
             document.querySelector(UISelectors.addBtn).style.display = 'inline';
 
+        },
+        showEditState: function(){
+            document.querySelector(UISelectors.updateBtn).style.display = 'inline';
+            document.querySelector(UISelectors.deleteBtn).style.display = 'inline';
+            document.querySelector(UISelectors.backBtn).style.display = 'inline';
+            document.querySelector(UISelectors.addBtn).style.display = 'none';
+
         }
     }
     
-    
+     
 })();
 
 const App = (function(ItemCtrl,UICtrl){
@@ -136,7 +167,7 @@ const App = (function(ItemCtrl,UICtrl){
 
         document.querySelector(UISelectors.addBtn).addEventListener('click',itemAddSubmit);
 
-        //document.querySelector(UISelectors.addBtn).addEventListener('click',itemAddSubmit);
+        document.querySelector(UISelectors.itemList).addEventListener('click',itemUpdateSubmit);
 
     } 
 
@@ -161,6 +192,31 @@ const App = (function(ItemCtrl,UICtrl){
         }
 
         e.preventDefault(); 
+    }
+
+    const itemUpdateSubmit = function(e){
+        
+        if(e.target.classList.contains('edit-item')){
+            // console.log('test');
+            const listId = e.target.parentElement.parentElement.id;
+
+            console.log(listId);
+
+            const listIdArr = listId.split('-');
+
+            const id = parseInt(listIdArr[1]);
+
+            const itemToEdit = ItemCtrl.getItemById(id);
+
+            ItemCtrl.setCurrentItem(itemToEdit);
+
+            UICtrl.addItemToForm();
+
+
+            console.log(itemToEdit);
+        }
+
+        e.preventDefault();
     }
 
     
